@@ -10,6 +10,19 @@
 //		  GLOBAL INTERRUPTS ! USERS
 //		  RESPONSIBILITY. THE LIBRARY WON'T
 //		  DO IT AUTOMATICALLY !!
+//		 
+//		  ON NEWER AVR (THE ONES THAT SUPPORT WDT
+//		  INTERRUPT MODE), IF THE MCU RESETS BECAUSE
+//		  OF WDT, THE WDRF BIT DOES NOT GET CLEARED ON
+//		  RESTART AND THE WDT REMAINS ACTIVE WITH THE
+//		  SMALLEST TIME UNIT. SO THE MCU KEEPS ON
+//		  RESETTING IN ENDLESS CYCLE. SO THIS BIT
+//		  NEEDS TO BE CHECKED AND CLEARED BY USER
+//		  PROGRAM AS EARLY AS POSSIBLE ON RESTART.
+//		  THIS BIT CAN SOMETIMES ALSO GET SET ERRANEOUSLY
+//		  SO ITS ALWAYS A GOOD PRACTICE TO CHECK FOR IT
+//		  WHEN THE PROGRAM STARTS
+//	
 //
 // DECEMBER 22, 2016
 //
@@ -18,8 +31,8 @@
 //////////////////////////////////////////////
 
 
-#ifndef _AVR_WDT_H_
-#define _AVR_WDT_H_
+#ifndef _AVR_WDT_LIB_H_
+#define _AVR_WDT_LIB_H_
 
 #include <stdio.h>
 #include <stdint.h>
@@ -42,10 +55,12 @@
 #define AVR_WDT_PRESCALE_4000MS	WDTO_4S
 #define AVR_WDT_PRESCALE_8000MS	WDTO_8S
 
+
 void AVR_WDT_Enable(uint8_t wdt_mode, uint8_t wdt_prescale);
-uint8_t AVR_WDT_Check_Reset_Flag(void);
-void AVR_WDT_Clear_Reset_Flag(void);
 void AVR_WDT_Reset(void);
 void AVR_WDT_Disable(void);
+void AVR_WDT_Reenable_Interrupt(void);
+uint8_t AVR_WDT_Check_Reset_Flag(void);
+void AVR_WDT_Clear_Reset_Flag(void);
 
 #endif
